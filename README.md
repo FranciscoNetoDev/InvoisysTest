@@ -1,27 +1,25 @@
 # InvoisysTest
 
-Aplicacao .NET 8 para validar um lote de documentos fiscais recebido em um arquivo JSON.
+Aplicação .NET 8 para validar um lote de documentos fiscais recebido em um arquivo JSON.
 
-O projeto foi criado para o desafio tecnico de processamento de lote de documentos fiscais. A solucao le um arquivo JSON, valida cada documento em memoria, classifica os documentos como validos ou invalidos e retorna um resumo consolidado do lote.
+O projeto foi criado para o desafio técnico de processamento de lote de documentos fiscais. A solução lê um arquivo JSON, valida cada documento em memória, classifica os documentos como válidos ou inválidos e retorna um resumo consolidado do lote.
 
 ## Tipo de documento escolhido
 
-A primeira etapa do desafio pede suporte a apenas um tipo de documento fiscal. Esta implementacao valida documentos do tipo:
+A primeira etapa do desafio pede suporte a apenas um tipo de documento fiscal. Esta implementação valida documentos do tipo:
 
 ```text
 NFE
 ```
 
-Documentos com outros tipos reconhecidos, como `NFSE`, sao marcados como nao suportados.
-
 ## Stack
 
-- .NET 8
-- ASP.NET Core Web API
-- xUnit para testes automatizados
-- Swagger para facilitar a execucao manual em ambiente de desenvolvimento
+* .NET 8
+* ASP.NET Core Web API
+* xUnit para testes automatizados
+* Swagger para facilitar a execução manual em ambiente de desenvolvimento
 
-## Estrutura da solucao
+## Estrutura da solução
 
 ```text
 InvoisysTest/
@@ -44,25 +42,10 @@ InvoisysTest.Tests/
 
 Responsabilidades principais:
 
-- `InvoisysTest`: camada de entrada HTTP.
-- `InvoisysTest.Application`: regras de validacao do lote.
-- `InvoisysTest.Domain`: contratos, modelos e enums.
-- `InvoisysTest.Tests`: testes automatizados.
-
-## Regras de validacao
-
-Cada documento do lote e validado com as seguintes regras:
-
-- `id` deve ser informado.
-- `tipo` deve ser informado e deve representar um tipo conhecido.
-- Apenas `NFE` e suportado nesta etapa.
-- `numero` nao pode ser vazio.
-- `serie` nao pode ser vazia.
-- `valor` deve ser maior que zero.
-- `cnpjEmitente` deve conter 14 digitos numericos.
-- `cnpjDestinatario`, quando informado, deve conter 14 digitos numericos.
-- `dataEmissao` deve ser informada.
-- Nao pode haver duplicidade dentro do lote para a combinacao `tipo`, `cnpjEmitente`, `serie` e `numero`.
+* `InvoisysTest`: camada de entrada HTTP.
+* `InvoisysTest.Application`: regras de validação do lote.
+* `InvoisysTest.Domain`: contratos, modelos e enums.
+* `InvoisysTest.Tests`: testes automatizados.
 
 ## Como executar
 
@@ -74,7 +57,7 @@ dotnet build InvoisysTest.sln
 dotnet run --project InvoisysTest\InvoisysTest.csproj
 ```
 
-Com o perfil HTTP padrao, a API fica disponivel em:
+Com o perfil HTTP padrão, a API fica disponível em:
 
 ```text
 http://localhost:5273
@@ -93,13 +76,13 @@ POST /api/InvoiSys/ValidaLoteDocumentoFiscal
 Content-Type: multipart/form-data
 ```
 
-Campo esperado no formulario:
+Campo esperado no formulário:
 
 ```text
 arquivo
 ```
 
-O arquivo enviado deve ter extensao `.json`.
+O arquivo enviado deve ter a extensão `.json`.
 
 ## Exemplo de entrada
 
@@ -131,24 +114,7 @@ O arquivo enviado deve ter extensao `.json`.
 }
 ```
 
-O mesmo exemplo esta disponivel em:
-
-```text
-InvoisysTest.Tests\Assets\ValidaLoteDocumentoFiscalRequest.json
-```
-
-## Exemplo de chamada com PowerShell
-
-```powershell
-$arquivo = Get-Item ".\InvoisysTest.Tests\Assets\ValidaLoteDocumentoFiscalRequest.json"
-
-Invoke-RestMethod `
-  -Uri "http://localhost:5273/api/InvoiSys/ValidaLoteDocumentoFiscal" `
-  -Method Post `
-  -Form @{ arquivo = $arquivo }
-```
-
-## Exemplo de saida
+## Exemplo de saída
 
 ```json
 {
@@ -164,12 +130,12 @@ Invoke-RestMethod `
     },
     {
       "id": "DOC-002",
-      "status": "Inv\u00e1lido",
+      "status": "Inválido",
       "erros": [
-        "N\u00famero n\u00e3o informado.",
+        "Número não informado.",
         "Valor deve ser maior que zero.",
-        "CNPJ do emitente inv\u00e1lido.",
-        "CNPJ do destinat\u00e1rio inv\u00e1lido."
+        "CNPJ do emitente inválido.",
+        "CNPJ do destinatário inválido."
       ]
     }
   ]
@@ -183,17 +149,3 @@ Execute os testes automatizados com:
 ```powershell
 dotnet test InvoisysTest.sln
 ```
-
-## Decisoes tecnicas
-
-- Todo o processamento ocorre em memoria, sem banco de dados.
-- O arquivo JSON e recebido por upload para manter a entrada explicita e simples de testar via API.
-- As regras de negocio ficam concentradas em `DocumentoFiscalService`.
-- O controller trata validacoes de entrada relacionadas ao arquivo, como ausencia, arquivo vazio, extensao invalida e JSON malformado.
-- A solucao evita integracoes externas, filas, cache, autenticacao e persistencia, mantendo aderencia ao escopo do desafio.
-
-## Melhorias futuras
-
-- Ampliar a cobertura de testes para duplicidade, tipo invalido, tipo nao suportado, arquivo vazio e JSON invalido.
-- Padronizar o status de saida como `VALIDO` e `INVALIDO`, caso seja exigida aderencia textual exata ao exemplo do desafio.
-- Adicionar um arquivo de exemplo de saida versionado fora do README.
