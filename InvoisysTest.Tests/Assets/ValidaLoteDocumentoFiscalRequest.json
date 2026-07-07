@@ -1,0 +1,25 @@
+{
+"loteId": "LOTE-001",
+"documentos": [
+{
+"id": "DOC-001",
+"tipo": "NFE",
+"numero": "12345",
+"serie": "1",
+"valor": 1500.50,
+"cnpjEmitente": "12345678000195",
+"cnpjDestinatario": "98765432000110",
+"dataEmissao": "2026-04-10"
+},
+{
+"id": "DOC-002",
+"tipo": "NFE",
+"numero": "",
+"serie": "1",
+"valor": -10,
+"cnpjEmitente": "111",
+"cnpjDestinatario": "222",
+"dataEmissao": "2026-04-10"
+}
+]
+}
