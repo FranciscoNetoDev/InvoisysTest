@@ -43,13 +43,13 @@ public class InvoiSysControllerTests
             documento =>
             {
                 Assert.Equal("DOC-001", documento.Id);
-                Assert.Equal("Válido", documento.Status);
+                Assert.Equal("VALIDO", documento.Status);
                 Assert.Empty(documento.Erros);
             },
             documento =>
             {
                 Assert.Equal("DOC-002", documento.Id);
-                Assert.Equal("Inválido", documento.Status);
+                Assert.Equal("INVALIDO", documento.Status);
                 Assert.Equal(
                     new[]
                     {
