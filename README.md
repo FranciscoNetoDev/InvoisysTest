@@ -125,12 +125,12 @@ O arquivo enviado deve ter a extensão `.json`.
   "documentos": [
     {
       "id": "DOC-001",
-      "status": "V\u00e1lido",
+      "status": "VALIDO",
       "erros": []
     },
     {
       "id": "DOC-002",
-      "status": "Inválido",
+      "status": "INVALIDO",
       "erros": [
         "Número não informado.",
         "Valor deve ser maior que zero.",
