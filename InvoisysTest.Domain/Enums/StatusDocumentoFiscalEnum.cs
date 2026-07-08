@@ -4,9 +4,9 @@ namespace InvoisysTest.Domain.Enums;
 
 public enum StatusDocumentoFiscalEnum
 {
-    [Description("Válido")]
+    [Description("VALIDO")]
     Valido,
 
-    [Description("Inválido")]
+    [Description("INVALIDO")]
     Invalido
 }
