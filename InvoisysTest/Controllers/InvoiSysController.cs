@@ -34,12 +34,7 @@ public class InvoiSysController : Controller
         {
             using var stream = arquivo.OpenReadStream();
 
-            loteFiscal = await JsonSerializer.DeserializeAsync<ValidacaoLoteFiscalRequest>(
-                stream,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+            loteFiscal = await JsonSerializer.DeserializeAsync<ValidacaoLoteFiscalRequest>(stream);
         }
         catch (JsonException)
         {
