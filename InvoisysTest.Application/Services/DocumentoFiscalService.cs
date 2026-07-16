@@ -3,12 +3,13 @@ using InvoisysTest.Domain.Extensions;
 using InvoisysTest.Domain.Interfaces.Services;
 using InvoisysTest.Domain.Models.Request.GravarLoteDocumentoFiscal;
 using InvoisysTest.Domain.Models.Response.ValidaLoteDocumentoFiscal;
+using InvoisysTest.Domain.Rules;
+using InvoisysTest.Domain.Validators;
 
 namespace InvoisysTest.Application.Services;
 
 public class DocumentoFiscalService : IDocumentoFiscalService
 {
-    private const TipoDocumentoEnum TipoDocumentoSuportado = TipoDocumentoEnum.NFE;
     private const string DocumentoDuplicadoNoLote = "Documento duplicado no lote.";
 
     public ValidacaoLoteFiscalResponse ValidaLote(ValidacaoLoteFiscalRequest request)
@@ -66,17 +67,14 @@ public class DocumentoFiscalService : IDocumentoFiscalService
         if (documento.Valor <= 0)
             response.Erros.Add("Valor deve ser maior que zero.");
 
-        if (string.IsNullOrWhiteSpace(documento.CnpjEmitente))
-            response.Erros.Add("CNPJ do emitente não informado.");
-        else if (!CnpjValido(documento.CnpjEmitente))
-            response.Erros.Add("CNPJ do emitente inválido.");
-
         if (!string.IsNullOrWhiteSpace(documento.CnpjDestinatario) &&
-            !CnpjValido(documento.CnpjDestinatario))
+            !CnpjValidator.CnpjValido(documento.CnpjDestinatario))
             response.Erros.Add("CNPJ do destinatário inválido.");
 
         if (documento.DataEmissao == default)
             response.Erros.Add("Data de emissão não informada.");
+
+        response.Erros.AddRange(NFSeRule.AplicaRegras(documento));
     }
 
     private static void ValidarTipo(
@@ -98,8 +96,6 @@ public class DocumentoFiscalService : IDocumentoFiscalService
             return;
         }
 
-        if (tipoDocumento != TipoDocumentoSuportado)
-            response.Erros.Add("Tipo não suportado.");
     }
 
     private static void ValidarDuplicidadeNoLote(
@@ -151,10 +147,7 @@ public class DocumentoFiscalService : IDocumentoFiscalService
             documento.Numero.Trim());
     }
 
-    private static bool CnpjValido(string cnpj)
-    {
-        return cnpj.Length == 14 && cnpj.All(char.IsDigit);
-    }
+    
 
     private sealed class DocumentoFiscalValidacaoResultado
     {
